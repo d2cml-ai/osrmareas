@@ -10,13 +10,13 @@
 #' @export
 #'
 #' @examples
-get_area <- function(routes_df_xy, max_km = max(routes_df_xy$distance), concavity = 2, len_th = 0){
+get_area <- function(routes_df_xy, max_km = max(routes_df_xy$distance), crs_ = sf::st_crs(routes_df_xy), concavity = 2, len_th = 0){
   border <-
     routes_df_xy |>
     dplyr::filter(distance < max_km) |>
     sf::st_drop_geometry() |>
     tibble::as_tibble() |>
-    sf::st_as_sf(coords = c('x', 'y')) |>
+    sf::st_as_sf(coords = c('x', 'y'), crs = crs_) |>
     concaveman::concaveman(concavity = concavity, length_threshold = len_th)
   return(border)
 }
