@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-get_area <- function(routes_df_xy, max_km, concavity = 2, len_th = 0){
+get_area <- function(routes_df_xy, max_km = max(routes_df_xy$distance), concavity = 2, len_th = 0){
   border <-
     routes_df_xy |>
     dplyr::filter(distance < max_km) |>

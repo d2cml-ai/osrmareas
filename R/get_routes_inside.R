@@ -24,7 +24,7 @@ get_routes_inside <- function(
     lat, lon, radius_km = 5, grid_size = 1, max_km = NULL, crs_ = 4326, f_grid = ceiling, .progress = T) {
 
   initial_center <- c(lon, lat)
-  n_grid <- f_grid(radius_km / grid_size)
+  n_grid <- f_grid(radius_km / grid_size)  * 2
 
   center <- initial_center |>
     sf::st_point() |>
