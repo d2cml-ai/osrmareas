@@ -1,0 +1,95 @@
+---
+title: OSRM areas
+format: gfm
+knitr:
+  opts_chunk: 
+    fig.path: figs/
+---
+
+```{r include=F}
+knitr::opts_chunk$set(
+  cache = T, 
+  warning = F
+)
+```
+
+
+# Installation
+
+```{r}
+# install.packages('remotes')
+# remotes::install_github('d2cml-ai/osrmareas')
+```
+
+# Usage
+
+```{r dep}
+library(osrmareas)
+library(ggplot2)
+library(dplyr)
+```
+
+
+```{r a1}
+lat <- -9.0686007
+lon <- -78.5891182
+
+routes <- get_routes_inside(lat, lon, radius_km = 2, grid_size = 0.300)
+routes
+```
+
+```{r p1}
+p1 <- 
+  ggplot(routes) + 
+  geom_sf() + 
+  coord_sf() +
+  theme_minimal()
+p1
+```
+
+Filter points inside 10km 
+
+
+```{r p2}
+km_max <- 2
+routes_km <- routes |> 
+  dplyr::filter(distance < km_max) 
+
+p2 <- 
+  routes_km |> 
+  ggplot() +
+  geom_sf() +
+  theme_minimal()
+p2
+```
+
+Generate a polygon shapefile
+
+```{r a2}
+area1 <- 
+  get_area(routes_km, km_max, concavity = 1) 
+area2 <- 
+  get_area(routes_km, km_max, concavity = 2)
+
+area1 |> 
+  ggplot() +
+  geom_sf()
+area2 |> 
+  ggplot() +
+  geom_sf()
+```
+
+# Routes inside the area
+
+
+```{r p3}
+bind_rows(area1, area2) |> 
+  mutate(concavity = row_number() |> factor()) |> 
+  ggplot() +
+  geom_sf(aes(color = concavity), fill = NA) +
+  geom_sf(data = routes_km, color = "grey80") +
+  geom_point(aes(lon, lat)) +
+  labs(title = "Area between 2km (car)") +
+  theme_minimal() 
+```
+
