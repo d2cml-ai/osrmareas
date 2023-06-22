@@ -15,20 +15,25 @@ library(ggplot2)
 library(dplyr)
 ```
 
+The `osrmareas` package provides functions for working with OSRM routes
+and generating area polygons. Here’s an example of how to use the
+package:
+
 ``` r
 lat <- -9.0686007
 lon <- -78.5891182
 
+# Get routes inside a specified radius
 routes <- get_routes_inside(lat, lon, radius_km = 2, grid_size = 0.300)
 ```
 
-     ■■■■                              10% |  ETA: 15s
+     ■■■                                8% |  ETA: 21s
 
-     ■■■■■■■■■■■■■                     39% |  ETA:  7s
+     ■■■■■■■■■■■■                      37% |  ETA:  8s
 
-     ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  4s
+     ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  5s
 
-     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 
 ``` r
 routes
@@ -63,7 +68,12 @@ routes
     src_dst...9  LINESTRING (-78.58915 -9.06... -78.58912 -9.068601
     src_dst...10 LINESTRING (-78.58915 -9.06... -78.58912 -9.068601
 
+The `get_routes_inside` function retrieves routes within a given radius
+from a specified latitude and longitude. It returns a dataframe with the
+routes information.
+
 ``` r
+# Plot the routes on a map
 p1 <- 
   ggplot(routes) + 
   geom_sf() + 
@@ -74,7 +84,9 @@ p1
 
 ![](figs/p1-1.png)
 
-Filter points inside 10km
+You can visualize the routes using `ggplot2` and the `geom_sf` function.
+
+Filter points inside 2km radius:
 
 ``` r
 km_max <- 2
@@ -91,7 +103,10 @@ p2
 
 ![](figs/p2-1.png)
 
-Generate a polygon shapefile
+This code filters the routes within a maximum distance of 2km and plots
+them on a map.
+
+Generate a polygon shapefile:
 
 ``` r
 area1 <- 
@@ -114,7 +129,10 @@ area2 |>
 
 ![](figs/a2-2.png)
 
-# Routes inside the area
+The `get_area` function generates a polygon shapefile based on the
+filtered routes within a specified maximum distance and concavity level.
+
+Routes inside the area:
 
 ``` r
 bind_rows(area1, area2) |> 
@@ -128,3 +146,11 @@ bind_rows(area1, area2) |>
 ```
 
 ![](figs/p3-1.png)
+
+This code plots the generated area polygons along with the filtered
+routes inside the area. The `concavity` level is used to differentiate
+the polygons, and the original routes are shown in grey.
+
+Please note that you need to have the necessary packages installed and
+loaded (`osrmareas`, `ggplot2`, `dplyr`) in order to run the code
+successfully.
